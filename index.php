@@ -5,62 +5,83 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/site.php';
 require_once __DIR__ . '/includes/lead.php';
 require_once __DIR__ . '/includes/whatsapp.php';
+require_once __DIR__ . '/includes/db.php';
+
+/**
+ * Packages preload (for home page sections). Safe on fresh installs.
+ */
+$packages = [];
+try {
+  if (function_exists('all')) {
+    $packages = all("SELECT * FROM packages WHERE is_active=1 ORDER BY sort_order ASC, id DESC");
+  } else {
+    $pdo = $GLOBALS['pdo'] ?? null;
+    if ($pdo instanceof PDO) {
+      $st = $pdo->query("SELECT * FROM packages WHERE is_active=1 ORDER BY sort_order ASC, id DESC");
+      $packages = $st ? ($st->fetchAll(PDO::FETCH_ASSOC) ?: []) : [];
+    }
+  }
+} catch (Throwable $e) {
+  $packages = [];
+}
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-$path = rtrim($path, '/');
+$path = rtrim((string)$path, '/');
 if ($path === '') $path = '/';
 
-if ($path === '/lead-submit' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+/**
+ * POST endpoints
+ */
+if ($path === '/lead-submit' && (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST')) {
   handle_lead_submit();
   exit;
 }
 
-if ($path === '/wa-track' && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-  wa_track_handler();
-}
-
-if ($path === '/admin') {
-  redirect(url('admin/'));
-}
-
-
-// Preload packages for pages that need it (e.g., Home -> Our Packages).
-// Pages can use $packages directly.
-$packages = [];
-if (function_exists('all')) {
-  try {
-    $packages = all("SELECT * FROM packages WHERE is_active=1 ORDER BY sort_order ASC, id DESC");
-  } catch (Throwable $e) {
-    // Fail-closed: do not break frontend if DB/table is not ready.
-    $packages = [];
+if ($path === '/wa-track' || $path === '/whatsapp-track') {
+  // track whatsapp clicks (expects your includes/whatsapp.php to handle response)
+  if (function_exists('wa_track_handler')) {
+    wa_track_handler();
+    exit;
   }
 }
 
+/**
+ * Admin route pass-through
+ */
+if ($path === '/admin') {
+  header('Location: ' . url('/admin/'));
+  exit;
+}
+if (str_starts_with($path, '/admin/')) {
+  require __DIR__ . '/admin/index.php';
+  exit;
+}
 
+/**
+ * Page router: maps / to pages/home.php (or pages/index.php), and /slug to pages/slug.php
+ */
 $routes = [
-  '/' => ['file' => __DIR__ . '/pages/home.php'],
-  '/blog' => ['file' => __DIR__ . '/pages/blog_list.php'],
+  '/' => __DIR__ . '/pages/home.php',
 ];
 
-if (preg_match('~^/blog/([a-z0-9\-]+)$~', $path, $m)) {
-  $params = ['slug' => $m[1]];
-  require __DIR__ . '/pages/blog_post.php';
+if (isset($routes[$path]) && is_file($routes[$path])) {
+  require $routes[$path];
   exit;
 }
 
-if (isset($routes[$path])) {
-  require $routes[$path]['file'];
+$slug = ltrim($path, '/');
+$slugFile = __DIR__ . '/pages/' . $slug . '.php';
+if ($slug !== '' && is_file($slugFile)) {
+  require $slugFile;
   exit;
 }
 
-http_response_code(404);
-$seo_title = "404 • Not found";
-$seo_description = "Page not found.";
-$site_name = setting('site_name','DesertSafariGo');
-$footer_bg_url = setting('footer_bg_url', url('assets/img/placeholder.jpg'));
-$phone = setting('contact_phone','+971 50 000 0000');
-$email = setting('contact_email','hello@desertsafarigo.com');
-$whatsapp = setting('contact_whatsapp','+971500000000');
+/**
+ * Fallback 404
+ */
+$phone = function_exists('setting') ? setting('contact_phone','+971 50 000 0000') : '+971 50 000 0000';
+$email = function_exists('setting') ? setting('contact_email','hello@desertsafarigo.com') : 'hello@desertsafarigo.com';
+$whatsapp = function_exists('setting') ? setting('contact_whatsapp','+971500000000') : '+971500000000';
 
 require __DIR__ . '/partials/head.php';
 ?>
@@ -68,7 +89,7 @@ require __DIR__ . '/partials/head.php';
   <div class="container">
     <h2>Page not found</h2>
     <p class="lead">The page you requested does not exist.</p>
-    <a class="btn primary" href="<?= e(url('/')) ?>">Go home</a>
+    <a class="btn primary" href="<?= function_exists('url') ? e(url('/')) : '/' ?>">Go home</a>
   </div>
 </section>
 <?php require __DIR__ . '/partials/footer.php'; ?>
