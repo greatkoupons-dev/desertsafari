@@ -37,26 +37,29 @@ require_once __DIR__ . '/../includes/functions.php';
       </button>
     </div>
 
-    <!-- Mobile drawer (slides from right) -->
-    <div class="drawerOverlay" data-drawer-overlay aria-hidden="true"></div>
-    <aside class="drawer" data-drawer aria-hidden="true" aria-label="Site menu">
-      <div class="drawerHead">
-        <div class="drawerBrand">
-          <div class="logo"></div>
-          <div>
-            <div style="font-weight:900; letter-spacing:-.2px"><?= e($site_name ?? 'DesertSafariGo') ?></div>
-            <div style="font-size:12px; color:rgba(16,19,22,.58)"><?= e($site_tagline_small ?? 'Dubai experiences • instant booking') ?></div>
-          </div>
-        </div>
-        <button class="drawerClose" type="button" data-drawer-close aria-label="Close menu">×</button>
-      </div>
-      <nav class="drawerNav">
-        <a href="<?= e(url('#packages')) ?>" data-drawer-link>Packages</a>
-        <a href="<?= e(url('#why')) ?>" data-drawer-link>Why us</a>
-        <a href="<?= e(url('#reviews')) ?>" data-drawer-link>Testimonials</a>
-        <a href="<?= e(url('blog')) ?>" data-drawer-link>Blog</a>
-        <a class="btn primary" href="<?= e($primary_cta_link ?? url('#lead')) ?>" data-drawer-link><?= e($primary_cta_text ?? 'Book now') ?></a>
-      </nav>
-    </aside>
   </div>
 </header>
+
+<!-- Mobile drawer + overlay are placed directly under <body> (not inside the sticky header)
+     to avoid mobile browser bugs where fixed-position children can render relative to
+     a backdrop-filter/sticky ancestor and leak the page behind. -->
+<div class="drawerOverlay" data-drawer-overlay aria-hidden="true"></div>
+<aside class="drawer" data-drawer aria-hidden="true" aria-label="Site menu">
+  <div class="drawerHead">
+    <div class="drawerBrand">
+      <div class="logo"></div>
+      <div>
+        <div style="font-weight:900; letter-spacing:-.2px"><?= e($site_name ?? 'DesertSafariGo') ?></div>
+        <div style="font-size:12px; color:rgba(16,19,22,.58)"><?= e($site_tagline_small ?? 'Dubai experiences • instant booking') ?></div>
+      </div>
+    </div>
+    <button class="drawerClose" type="button" data-drawer-close aria-label="Close menu">×</button>
+  </div>
+  <nav class="drawerNav">
+    <a href="<?= e(url('#packages')) ?>" data-drawer-link>Packages</a>
+    <a href="<?= e(url('#why')) ?>" data-drawer-link>Why us</a>
+    <a href="<?= e(url('#reviews')) ?>" data-drawer-link>Testimonials</a>
+    <a href="<?= e(url('blog')) ?>" data-drawer-link>Blog</a>
+    <a class="btn primary" href="<?= e($primary_cta_link ?? url('#lead')) ?>" data-drawer-link><?= e($primary_cta_text ?? 'Book now') ?></a>
+  </nav>
+</aside>

@@ -63,17 +63,28 @@ img,svg,video,canvas{max-width:100%; height:auto}
 
 /* Mobile drawer */
 .drawerOverlay{
-  position:fixed; inset:0; z-index:95;
-  background:rgba(247,244,239,.78);
-  backdrop-filter: blur(8px);
+  position:fixed;
+  top:0; left:0; width:100vw;
+  height:100vh;
+  height:100dvh;
+  /* Keep the drawer above everything else */
+  z-index:9990;
+  /* Fully-opaque beige overlay so page content never visually mixes */
+  background:#f7f4ef;
+  backdrop-filter:none;
   opacity:0; pointer-events:none;
   transition: opacity .2s ease;
 }
 .drawer{
-  position:fixed; top:0; right:0; height:100%; z-index:96;
+  position:fixed;
+  top:0; right:0;
+  height:100vh;
+  height:100dvh;
+  z-index:9991;
   width:min(360px, 88vw);
-  background:rgba(247,244,239,.94);
-  backdrop-filter: blur(18px);
+  /* Solid panel background for legibility */
+  background:#f7f4ef;
+  backdrop-filter:none;
   border-left:1px solid rgba(16,19,22,.10);
   box-shadow: -18px 0 55px rgba(0,0,0,.22);
   transform:translateX(102%);
@@ -86,8 +97,8 @@ img,svg,video,canvas{max-width:100%; height:auto}
 .drawerClose{
   width:42px; height:42px; border-radius:14px;
   border:1px solid rgba(16,19,22,.10);
-  background:rgba(255,255,255,.72);
-  backdrop-filter: blur(12px);
+  background:#fff;
+  backdrop-filter:none;
   box-shadow: var(--shadow2);
   font-size:22px; line-height:1; cursor:pointer;
 }
@@ -96,7 +107,7 @@ img,svg,video,canvas{max-width:100%; height:auto}
   display:flex; align-items:center; justify-content:space-between;
   padding:14px 14px;
   border-radius:18px;
-  background:rgba(255,255,255,.70);
+  background:#fff;
   border:1px solid rgba(16,19,22,.08);
   font-weight:800;
 }
