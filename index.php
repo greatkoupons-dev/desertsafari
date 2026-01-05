@@ -23,6 +23,20 @@ if ($path === '/admin') {
   redirect(url('admin/'));
 }
 
+
+// Preload packages for pages that need it (e.g., Home -> Our Packages).
+// Pages can use $packages directly.
+$packages = [];
+if (function_exists('all')) {
+  try {
+    $packages = all("SELECT * FROM packages WHERE is_active=1 ORDER BY sort_order ASC, id DESC");
+  } catch (Throwable $e) {
+    // Fail-closed: do not break frontend if DB/table is not ready.
+    $packages = [];
+  }
+}
+
+
 $routes = [
   '/' => ['file' => __DIR__ . '/pages/home.php'],
   '/blog' => ['file' => __DIR__ . '/pages/blog_list.php'],
