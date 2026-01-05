@@ -1,0 +1,29 @@
+:root{ --bg:#0b0d0f; --paper:#f7f4ef; --ink:#101316; --muted:#6d7673; --r:18px; }
+*{box-sizing:border-box}
+body{margin:0;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:var(--paper); color:var(--ink)}
+a{text-decoration:none;color:inherit}
+.container{width:min(1200px, calc(100% - 40px)); margin:0 auto}
+.topbar{position:sticky;top:0;z-index:40;background:rgba(247,244,239,.78);backdrop-filter: blur(14px);border-bottom:1px solid rgba(16,19,22,.08)}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+.brand{font-weight:900}
+.nav{display:flex;gap:10px;flex-wrap:wrap}
+.nav a{padding:9px 12px;border-radius:14px;background:rgba(255,255,255,.65);border:1px solid rgba(16,19,22,.10)}
+.nav a.active{background:linear-gradient(135deg, rgba(200,168,90,.95), rgba(47,111,103,.92)); color:#fff; border-color: rgba(255,255,255,.2)}
+.card{background:rgba(255,255,255,.76);border:1px solid rgba(16,19,22,.10);border-radius:var(--r);box-shadow:0 12px 30px rgba(0,0,0,.12); padding:16px}
+.grid{display:grid;grid-template-columns: 1fr 1fr; gap:14px}
+.grid3{display:grid;grid-template-columns: repeat(3, 1fr); gap:14px}
+.grid4{display:grid;grid-template-columns: repeat(4, 1fr); gap:14px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border-bottom:1px solid rgba(16,19,22,.08);vertical-align:top;font-size:14px}
+.table th{text-align:left;font-size:12px;color:rgba(16,19,22,.62);letter-spacing:.4px;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:999px;border:1px solid rgba(16,19,22,.12);background:rgba(255,255,255,.72);cursor:pointer;font-weight:700}
+.btn.primary{background:linear-gradient(135deg, rgba(200,168,90,.95), rgba(47,111,103,.92)); color:#fff; border-color: rgba(255,255,255,.2)}
+.btn.danger{background:rgba(180, 40, 50, .10); border-color: rgba(180,40,50,.25); color:#8a1c25}
+.input{width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(16,19,22,.12);background:rgba(255,255,255,.8);outline:none}
+.input:focus{border-color: rgba(47,111,103,.55); box-shadow: 0 0 0 3px rgba(47,111,103,.12)}
+textarea.input{min-height:110px;resize:vertical}
+.small{font-size:12px;color:rgba(16,19,22,.62);line-height:1.6}
+.h1{font-size:22px;font-weight:900;margin:0 0 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.65);border:1px solid rgba(16,19,22,.10);font-size:12px;font-weight:800}
+@media (max-width: 960px){ .grid,.grid3,.grid4{grid-template-columns:1fr} .nav{display:none} }
