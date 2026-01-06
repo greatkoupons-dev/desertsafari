@@ -33,18 +33,24 @@ function wa_ip_hash(string $ip): string {
 }
 
 function wa_ensure_table(): void {
-  // Safe to call repeatedly
-  q(
-    "CREATE TABLE IF NOT EXISTS whatsapp_clicks (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      page VARCHAR(255) NOT NULL,
-      ip_hash CHAR(64) NOT NULL,
-      user_agent VARCHAR(255) NOT NULL,
-      created_at DATETIME NOT NULL,
-      INDEX idx_created_at (created_at),
-      INDEX idx_page (page)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
-  );
+  // Safe to call repeatedly.
+  // NOTE: Some shared hosts restrict CREATE privileges for DB users.
+  // We therefore swallow any exception here, and let the rest of the site/admin continue to work.
+  try {
+    q(
+      "CREATE TABLE IF NOT EXISTS whatsapp_clicks (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        page VARCHAR(255) NOT NULL,
+        ip_hash CHAR(64) NOT NULL,
+        user_agent VARCHAR(255) NOT NULL,
+        created_at DATETIME NOT NULL,
+        INDEX idx_created_at (created_at),
+        INDEX idx_page (page)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+    );
+  } catch (Throwable $e) {
+    // Intentionally ignore. Tracking/reporting will simply show 0 if the table is missing.
+  }
 }
 
 function wa_track_handler(): void {
