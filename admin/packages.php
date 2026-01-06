@@ -124,7 +124,7 @@ $list = dsg_all("SELECT * FROM packages ORDER BY sort_order ASC, id DESC");
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin — Packages</title>
-  <link rel="stylesheet" href="../assets/admin.css?v=1">
+  <link rel="stylesheet" href="assets/admin.css?v=1">
   <style>
     .wrap{max-width:1100px;margin:0 auto;padding:18px}
     .card{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.06)}
@@ -149,6 +149,7 @@ $list = dsg_all("SELECT * FROM packages ORDER BY sort_order ASC, id DESC");
   </style>
 </head>
 <body>
+    <?php require __DIR__ . '/partials/nav.php'; ?>
   <div class="wrap">
     <?php if ($flash): ?>
       <div class="flash <?= dsg_e($flash['type']) ?>"><?= dsg_e($flash['msg']) ?></div>
