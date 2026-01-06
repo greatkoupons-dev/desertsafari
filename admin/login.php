@@ -5,16 +5,25 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 start_session();
+
+$return = (string)($_GET['return'] ?? '');
+// Only allow returning inside /admin to avoid open redirects
+if ($return === '' || strpos($return, '/admin') !== 0) {
+  $return = '/admin/index.php';
+}
+
 if (admin_user()) {
-  redirect(url('admin/'));
+  // Redirect to a concrete file to avoid /admin/ rewrite loops
+  redirect($return);
 }
 
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
   $email = trim((string)($_POST['email'] ?? ''));
   $password = (string)($_POST['password'] ?? '');
+
   if (login_admin($email, $password)) {
-    redirect(url('admin/'));
+    redirect($return);
   } else {
     $error = 'Invalid credentials.';
   }
@@ -33,7 +42,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <div class="card" style="max-width:520px; margin:0 auto">
       <div class="h1">Admin Login</div>
       <div class="small">Login to manage content for <strong>desertsafarigo.com</strong>.</div>
-      <?php if($error): ?><div class="card" style="margin-top:12px; border-color: rgba(180,40,50,.25); background: rgba(180,40,50,.06)"><?= e($error) ?></div><?php endif; ?>
+
+      <?php if($error): ?>
+        <div class="card" style="margin-top:12px; border-color: rgba(180,40,50,.25); background: rgba(180,40,50,.06)">
+          <?= e($error) ?>
+        </div>
+      <?php endif; ?>
+
       <form method="post" style="margin-top:12px">
         <div class="grid">
           <div>
@@ -45,6 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             <input class="input" name="password" type="password" required>
           </div>
         </div>
+
         <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap">
           <button class="btn primary" type="submit">Login</button>
           <div class="small">If not installed, go to <a class="btn" href="<?= e(url('install/')) ?>">Installer</a></div>
