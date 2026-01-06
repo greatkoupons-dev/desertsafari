@@ -14,9 +14,15 @@ $leads_total = (int)(one("SELECT COUNT(*) AS c FROM leads")['c'] ?? 0);
 $posts = (int)(one("SELECT COUNT(*) AS c FROM blog_posts")['c'] ?? 0);
 $packages = (int)(one("SELECT COUNT(*) AS c FROM packages")['c'] ?? 0);
 
-wa_ensure_table();
-$wa_total = (int)(one("SELECT COUNT(*) AS c FROM whatsapp_clicks")['c'] ?? 0);
-$wa_24h = (int)(one("SELECT COUNT(*) AS c FROM whatsapp_clicks WHERE created_at >= (NOW() - INTERVAL 24 HOUR)")['c'] ?? 0);
+$wa_total = 0;
+$wa_24h = 0;
+try {
+  wa_ensure_table();
+  $wa_total = (int)(one("SELECT COUNT(*) AS c FROM whatsapp_clicks")['c'] ?? 0);
+  $wa_24h = (int)(one("SELECT COUNT(*) AS c FROM whatsapp_clicks WHERE created_at >= (NOW() - INTERVAL 24 HOUR)")['c'] ?? 0);
+} catch (Throwable $e) {
+  // Keep dashboard usable even if WhatsApp tracking table/privileges are not available.
+}
 
 $latest = all("SELECT * FROM leads ORDER BY id DESC LIMIT 10");
 ?>
