@@ -135,7 +135,7 @@ body.drawerOpen .drawer{transform:translateX(0)}
   z-index:0;
 }
 .heroBg{
-  position:absolute; inset:0; background-size:cover; background-position:center;
+  position:absolute; inset:0; background-size:cover; background-position:bottom;
   filter:saturate(1.05) contrast(1.02);
   opacity:.95;
 }
